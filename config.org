@@ -5,33 +5,16 @@
 This file is my emacs configuration file written in org mode. I
 believe this will be a better way for me to keep things organized. 
 
-* Display and Accessibility
-** Misc Displays
-#+begin_src emacs-lisp :tangle yes
-  (display-battery-mode t)
-  (display-time-mode t)
-
-  ;; (menu-bar-mode -1)
-  (scroll-bar-mode -1)
-  (tool-bar-mode -1)
-
-  (setq inhibit-startup-screen t)
-  (setq inhibit-startup-echo-area-message t)
-#+end_src
 * Packages
-** Package archives
-#+BEGIN_SRC emacs-lisp :tangle yes
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-			 ("marmalade" . "https://marmalade-repo.org/packages/")
-			 ;; ("melpa" . "https://melpa.org/packages/")
-			 ("melpa_mb" . "http://melpa.milkbox.net/packages/")
-			 ("org" . "http://orgmode.org/elpa/")))
-#+END_SRC
-** Initialize =Package.el=
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; (require 'package)
-  ;; (package-initialize)
-#+END_SRC
+** Initialize Archives
+#+begin_src emacs-lisp :tangle yes
+(require 'package)
+;; (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+;;                          ("marmalade" . "https://marmalade-repo.org/packages/")
+;;                          ("melpa" . "http://melpa.milkbox.net/packages/")
+;;                          ("org" . "http://orgmode.org/elpa/")))
+(package-initialize)
+#+end_src
 ** Load Paths
 #+begin_src emacs-lisp :tangle yes
 (add-to-list 'load-path 
@@ -54,6 +37,24 @@ believe this will be a better way for me to keep things organized.
 #+begin_src emacs-lisp :tangle yes
 (require 'cask)
 (cask-initialize)
+#+end_src
+** pallet
+#+begin_src emacs-lisp :tangle yes
+(require 'pallet)
+(pallet-mode t)
+#+end_src
+* Display and Accessibility
+** Misc Displays
+#+begin_src emacs-lisp :tangle yes
+  (display-battery-mode t)
+  (display-time-mode t)
+
+  ;; (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+
+  (setq inhibit-startup-screen t)
+  (setq inhibit-startup-echo-area-message t)
 #+end_src
 * Shortcuts
 ** Keys
