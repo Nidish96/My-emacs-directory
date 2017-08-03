@@ -1,0 +1,6 @@
+[submodule "cmake-ide"]
+	path = cmake-ide
+	url = https://github.com/Nidish96/cmake-ide.git
+[submodule "yasnippet-snippets"]
+	path = yasnippet-snippets
+	url = https://github.com/AndreaCrotti/yasnippet-snippets.git
