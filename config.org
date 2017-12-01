@@ -30,7 +30,7 @@ believe this will be a better way for me to keep things organized.
 ;; (add-to-list 'load-path
 ;; (concat user-emacs-directory "chess"))
 
-(add-to-list 'load-path "/home/nidish96/Software_Tools/rtags/src")
+(add-to-list 'load-path "/home/nidish96/.emacs.d/rtags/src")
 (add-to-list 'load-path "/home/nidish96/.cask")
 #+end_src
 ** Cask
@@ -248,7 +248,7 @@ believe this will be a better way for me to keep things organized.
 ** Langtool
 #+begin_src emacs-lisp :tangle yes
 (require 'langtool)
-(setq langtool-language-tool-jar "/home/nidish96/Software/LanguageTool-3.9/languagetool-commandline.jar")
+(setq langtool-language-tool-jar "/home/nidish96/.emacs.d/LanguageTool-3.9/languagetool-commandline.jar")
 
 (global-set-key "\C-x4w" 'langtool-check)
 (global-set-key "\C-x4W" 'langtool-check-done)

@@ -4,3 +4,6 @@
 [submodule "yasnippet-snippets"]
 	path = yasnippet-snippets
 	url = https://github.com/AndreaCrotti/yasnippet-snippets.git
+[submodule "rtags"]
+	path = rtags
+	url = https://github.com/Andersbakken/rtags.git
