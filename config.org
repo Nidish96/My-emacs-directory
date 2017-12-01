@@ -9,10 +9,10 @@ believe this will be a better way for me to keep things organized.
 ** Initialize Archives
 #+begin_src emacs-lisp :tangle yes
 (require 'package)
-;; (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-;;                          ("marmalade" . "https://marmalade-repo.org/packages/")
-;;                          ("melpa" . "http://melpa.milkbox.net/packages/")
-;;                          ("org" . "http://orgmode.org/elpa/")))
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                         ("marmalade" . "https://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")
+                         ("org" . "http://orgmode.org/elpa/")))
 (package-initialize)
 #+end_src
 ** Load Paths
@@ -27,11 +27,11 @@ believe this will be a better way for me to keep things organized.
 (concat user-emacs-directory "workgroups2/src"))
 (add-to-list 'load-path
 (concat user-emacs-directory "setup-linum"))
-(add-to-list 'load-path
-(concat user-emacs-directory "chess"))
+;; (add-to-list 'load-path
+;; (concat user-emacs-directory "chess"))
 
-(add-to-list 'load-path "/home/nidish_ubuntu1604/Software_Tools/rtags/src")
-(add-to-list 'load-path "/home/nidish_ubuntu1604/.cask")
+(add-to-list 'load-path "/home/nidish96/Software_Tools/rtags/src")
+(add-to-list 'load-path "/home/nidish96/.cask")
 #+end_src
 ** Cask
 #+begin_src emacs-lisp :tangle yes
@@ -241,12 +241,14 @@ believe this will be a better way for me to keep things organized.
 
 * Miscellaneous Utilities
 ** Chess
-(require 'chess)
-(autoload 'chess "chess" "Play a game of chess" t)
+#+begin_src emacs-lisp :tangle yes
+;; (require 'chess)
+;; (autoload 'chess "chess" "Play a game of chess" t)
+#+end_src
 ** Langtool
 #+begin_src emacs-lisp :tangle yes
 (require 'langtool)
-(setq langtool-language-tool-jar "/home/nidish_ubuntu1604/Software_Tools/LanguageTool/LanguageTool-3.6/languagetool-commandline.jar")
+(setq langtool-language-tool-jar "/home/nidish96/Software/LanguageTool-3.9/languagetool-commandline.jar")
 
 (global-set-key "\C-x4w" 'langtool-check)
 (global-set-key "\C-x4W" 'langtool-check-done)
@@ -486,7 +488,7 @@ believe this will be a better way for me to keep things organized.
 #+end_src
 *** imaxima
 #+begin_src emacs-lisp :tangle yes
-(add-to-list 'load-path "/home/nidish_ubuntu1604/mysw/share/maxima/branch_5_39_base_170_ga91c576/emacs")
+(add-to-list 'load-path "/home/nidish96/mysw/share/maxima/branch_5_39_base_170_ga91c576/emacs")
 (autoload 'maxima-mode "maxima" "Maxima mode" t)
 (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
 (autoload 'maxima "maxima" "Maxima interaction" t)
