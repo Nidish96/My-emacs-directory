@@ -12,7 +12,11 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes (quote (wheatgrass)))
  '(package-selected-packages (quote (package-build shut-up epl git commander f dash s)))
- )
+ '(safe-local-variable-values
+   (quote
+    ((cmake-ide-build-dir . "/home/nidish_ubuntu1604/Documents/8th_Semester/Final_Project/Codes/RotorFEM/Codes/build")
+     (cmake-ide-project-dir . "/home/nidish_ubuntu1604/Documents/8th_Semester/Final_Project/Codes/RotorFEM/Codes")
+     (cmake-ide-cmake-command-flags "-DCMAKE_INSTALL_PREFIX=~/mysw" "-DCMAKE_BUILD_TYPE=Release")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

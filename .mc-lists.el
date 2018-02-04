@@ -7,8 +7,10 @@
 	LaTeX-insert-left-brace
 	TeX-font
 	TeX-insert-backslash
+	TeX-insert-dollar
 	TeX-insert-macro
 	TeX-insert-sub-or-superscript
+	beginning-of-visual-line
 	c-electric-colon
 	c-electric-delete-forward
 	c-electric-lt-gt
@@ -18,10 +20,13 @@
 	c-electric-star
 	c-indent-line-or-region
 	comment-region
+	delete-indentation
 	end-of-visual-line
+	ess-smart-comma
 	fortran-split-line
 	handle-switch-frame
 	indent-for-tab-command
+	keyboard-escape-quit
 	org-cycle
 	org-delete-char
 	org-end-of-line

@@ -7,3 +7,6 @@
 [submodule "rtags"]
 	path = rtags
 	url = https://github.com/Andersbakken/rtags.git
+[submodule "yasnippet-ess"]
+	path = yasnippet-ess
+	url = https://github.com/jrnold/yasnippet-ess.git

@@ -80,6 +80,7 @@ believe this will be a better way for me to keep things organized.
 #+begin_src emacs-lisp :tangle yes
 (add-to-list 'auto-mode-alist '("\\.cfg\\'" . c-mode))
 (add-to-list 'auto-mode-alist '("\\.gp\\'" . gnuplot-mode))
+(add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
 #+end_src
 * Org Mode
 #+begin_src emacs-lisp :tangle yes
@@ -145,6 +146,8 @@ believe this will be a better way for me to keep things organized.
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 
   (add-hook 'TeX-mode 'auto-fill-mode)
+
+  (setq LaTeX-includegraphics-read-file 'LaTeX-includegraphics-read-file-relative)
 #+end_src
 *** Latexmk Support
 #+begin_src emacs-lisp :tangle yes
@@ -202,7 +205,7 @@ believe this will be a better way for me to keep things organized.
 (global-set-key (kbd "C-c t") 'helm-ctest)
 (define-key helm-find-files-map "\t" 'helm-execute-persistent-action)
 (setq
- helm-split-window-in-side-p           t
+ helm-split-window-inside-p           t
    ; open helm buffer inside current window,
    ; not occupy whole other window
  helm-move-to-line-cycle-in-source     t
@@ -385,6 +388,77 @@ believe this will be a better way for me to keep things organized.
 (setq diredp-hide-details-initially-flag nil)
 #+end_src
 * Programming Utilities
+** Completion
+*** Irony
+#+begin_src emacs-lisp :tangle yes
+(require 'irony)
+(add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'objc-mode-hook 'irony-mode)
+
+(defun my-irony-mode-hook ()
+  "."
+  (define-key irony-mode-map [remap completion-at-point]
+    'irony-completion-at-point-async)
+  (define-key irony-mode-map [remap complete-symbol]
+    'irony-completion-at-point-async))
+
+(add-hook 'irony-mode-hook 'my-irony-mode-hook)
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+#+end_src
+*** Yasnippet
+#+begin_src emacs-lisp :tangle yes
+(require 'yasnippet)
+(add-to-list 'yas-snippet-dirs "~/.emacs.d/yasnippet-snippets/")
+(add-to-list 'yas-snippet-dirs "/home/nidish96/.emacs.d/yasnippet-ess")
+(yas-global-mode 1)
+(yas-reload-all)
+#+end_src
+*** Company Irony Completion
+#+begin_src emacs-lisp :tangle yes
+(require 'company)
+(add-hook 'after-init-hook 'global-company-mode)
+(require 'company-rtags)
+
+(setq company-backends (delete 'company-semantic
+			       company-backends))
+;; (setq company-backends (delete 'company-capf
+;; 			       company-backends))
+(require 'company-irony-c-headers)
+(eval-after-load 'company
+  '(add-to-list
+    'company-backends '(company-irony-c-headers company-irony)))
+;; tab-completion with no delay
+(setq company-idle-delay 0)
+(define-key c-mode-map [C-tab] 'company-complete)
+(define-key c++-mode-map [C-tab] 'company-complete)
+
+(eval-after-load 'company
+  '(progn
+     (define-key company-mode-map (kbd "C-:") 'helm-company)
+     (define-key company-active-map (kbd "C-:") 'helm-company)))
+(define-key company-active-map (kbd "C-n") (lambda () (interactive) (company-complete-common-or-cycle 1)))
+(define-key company-active-map (kbd "C-p") (lambda () (interactive) (company-complete-common-or-cycle -1)))
+
+(defvar company-mode/enable-yas t
+  "Enable yasnippet for all backends.")
+
+;;(defun company-mode/backend-with-yas (backend)
+;;  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+;;      backend
+;;    (append (if (consp backend) backend (list backend))
+;;            '(:with company-yasnippet))))
+;;(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends));;
+
+;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+
+;; company-auctex
+(company-auctex-init)
+
+;; company-quickhelp
+(require 'company-quickhelp)
+(company-quickhelp-mode 1)
+#+end_src
 ** IDEs
 *** GGTags
 #+begin_src emacs-lisp :tangle yes
@@ -454,15 +528,16 @@ believe this will be a better way for me to keep things organized.
 **** Cmake-IDE
 #+begin_src emacs-lisp :tangle yes
 (require 'cmake-ide)
+(require 'rtags)
 (cmake-ide-setup)
 (setq cmake-ide-flags-c++ (append '("std-c++11")))
 (global-set-key (kbd "C-c m") 'cmake-ide-compile)
 
-(defun maybe-cmake-project-hook ()
-  "Enable cmake project mode if CMakeLists.txt exists."
-  (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
-(add-hook 'c-mode-hook 'maybe-cmake-project-hook)
-(add-hook 'c++-mode-hook 'maybe-cmake-project-hook)
+;; (defun maybe-cmake-project-hook ()
+;;  "Enable cmake project mode if CMakeLists.txt exists."
+;;  (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
+;; (add-hook 'c-mode-hook 'maybe-cmake-project-hook)
+;; (add-hook 'c++-mode-hook 'maybe-cmake-project-hook)
 #+end_src
 *** ElPy
 #+begin_src emacs-lisp :tangle yes
@@ -482,13 +557,26 @@ believe this will be a better way for me to keep things organized.
 (define-key julia-mode-map (kbd "C-c C-c") 'julia-shell-run-region-or-line)
 (define-key julia-mode-map (kbd "C-c C-s") 'julia-shell-save-and-go)
 #+end_src
+*** ESS for R
+#+begin_src emacs-lisp :tangle yes
+(add-hook 'inferior-ess-mode-hook
+    '(lambda nil
+          (define-key inferior-ess-mode-map [\C-up]
+              'comint-previous-matching-input-from-input)
+          (define-key inferior-ess-mode-map [\C-down]
+              'comint-next-matching-input-from-input)
+          (define-key inferior-ess-mode-map [\C-x \t]
+              'comint-dynamic-complete-filename)
+     )
+ )
+#+end_src
 *** Cmake Mode
 #+begin_src emacs-lisp :tangle yes
 (require 'cmake-mode)
 #+end_src
 *** imaxima
 #+begin_src emacs-lisp :tangle yes
-(add-to-list 'load-path "/home/nidish96/mysw/share/maxima/branch_5_39_base_170_ga91c576/emacs")
+(add-to-list 'load-path "/usr/local/share/maxima/branch_5_41_base_94_g852f8857f/emacs")
 (autoload 'maxima-mode "maxima" "Maxima mode" t)
 (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
 (autoload 'maxima "maxima" "Maxima interaction" t)
@@ -555,74 +643,6 @@ believe this will be a better way for me to keep things organized.
 (require 'clang-format)
 (global-set-key (kbd "C-M-TAB") 'clang-format-region)
 #+end_src
-** Completion
-*** Irony
-#+begin_src emacs-lisp :tangle yes
-(require 'irony)
-(add-hook 'c++-mode-hook 'irony-mode)
-(add-hook 'c-mode-hook 'irony-mode)
-(add-hook 'objc-mode-hook 'irony-mode)
-
-(defun my-irony-mode-hook ()
-  "."
-  (define-key irony-mode-map [remap completion-at-point]
-    'irony-completion-at-point-async)
-  (define-key irony-mode-map [remap complete-symbol]
-    'irony-completion-at-point-async))
-
-(add-hook 'irony-mode-hook 'my-irony-mode-hook)
-(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-#+end_src
-*** Yasnippet
-#+begin_src emacs-lisp :tangle yes
-(require 'yasnippet)
-(add-to-list 'yas-snippet-dirs "~/.emacs.d/yasnippet-snippets/")
-(yas-global-mode 1)
-(yas-reload-all)
-#+end_src
-*** Company Irony Completion
-#+begin_src emacs-lisp :tangle yes
-(require 'company)
-(add-hook 'after-init-hook 'global-company-mode)
-(require 'company-rtags)
-
-(add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-
-;; (setq company-backends (delete 'company-semantic
-;; 			       company-backends))
-(require 'company-irony-c-headers)
-(eval-after-load 'company
-  '(add-to-list
-    'company-backends '(company-irony-c-headers company-irony)))
-;; tab-completion with no delay
-(setq company-idle-delay 0)
-(define-key c-mode-map [C-tab] 'company-complete)
-(define-key c++-mode-map [C-tab] 'company-complete)
-
-(eval-after-load 'company
-  '(progn
-     (define-key company-mode-map (kbd "C-:") 'helm-company)
-     (define-key company-active-map (kbd "C-:") 'helm-company)))
-(define-key company-active-map (kbd "C-n") (lambda () (interactive) (company-complete-common-or-cycle 1)))
-(define-key company-active-map (kbd "C-p") (lambda () (interactive) (company-complete-common-or-cycle -1)))
-
-(defvar company-mode/enable-yas t
-  "Enable yasnippet for all backends.")
-
-(defun company-mode/backend-with-yas (backend)
-  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-      backend
-    (append (if (consp backend) backend (list backend))
-            '(:with company-yasnippet))))
-(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
-
-;; company-auctex
-(company-auctex-init)
-
-;; company-quickhelp
-(require 'company-quickhelp)
-(company-quickhelp-mode 1)
-#+end_src
 * Inspiring Quotes
 ** 
 #+BEGIN_QUOTE
@@ -642,7 +662,6 @@ ants find food: exploration essentially by diffusion, followed by
 exploitation mediated by a scalable communication mechanism -- Eric S
 Raymond, in CatB
 #+END_QUOTE
-
 
 * Init File Stuff
 ** Tangle init org file
